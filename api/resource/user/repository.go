@@ -34,3 +34,14 @@ func (r *Repository) List() (Users, error) {
 
 	return users, nil
 }
+
+func (r *Repository) Create(user *User) error {
+	query := "insert into users (name, email, phone, password, dob, role, created_at, updated_at) values ($1, $2, $3, $4, $5, $6, $7, $8);"
+	_, err := r.db.Exec(query, user.Name, user.Email, user.Phone, user.Password, user.DOB, user.Role, user.CreatedAt, user.UpdatedAt)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

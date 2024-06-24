@@ -1,6 +1,8 @@
 package user
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID        int       `json:"id"`
@@ -12,6 +14,15 @@ type User struct {
 	Role      string    `json:"role"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type CreateParams struct {
+	Name     string `json:"name" form:"required,max=255"`
+	Email    string `json:"email" form:"required,email"`
+	Phone    string `json:"phone" form:"required,max=15"`
+	Password string `json:"password" form:"required,min=8"`
+	DOB      string `json:"dob" form:"required,datetime=2006-01-02"`
+	Role     string `json:"role" form:"required,oneof=admin customer"`
 }
 
 type SerializedUser struct {
@@ -43,4 +54,19 @@ func (us Users) Serialized() []*SerializedUser {
 	}
 
 	return serializedUsers
+}
+
+func (c *CreateParams) ToUser() *User {
+	dob, _ := time.Parse("2006-01-02", c.DOB)
+
+	return &User{
+		Name:      c.Name,
+		Email:     c.Email,
+		Phone:     c.Phone,
+		Password:  c.Password,
+		DOB:       dob,
+		Role:      c.Role,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
 }

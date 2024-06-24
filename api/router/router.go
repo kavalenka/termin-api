@@ -14,6 +14,7 @@ func New(db *sql.DB) *chi.Mux {
 
 	userApi := user.New(db)
 	r.Get("/users", userApi.List)
+	r.Post("/users", userApi.Create)
 
 	return r
 }
