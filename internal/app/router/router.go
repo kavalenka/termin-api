@@ -3,8 +3,8 @@ package router
 import (
 	"database/sql"
 	"github.com/go-chi/chi/v5"
-	"termin-api/api/resource/health"
-	"termin-api/api/resource/user"
+	"termin-api/internal/app/resource/health"
+	"termin-api/internal/app/resource/user"
 )
 
 func New(db *sql.DB) *chi.Mux {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"termin-api/api/router"
 	"termin-api/config"
+	"termin-api/internal/app/router"
 	"time"
 )
 

@@ -2,8 +2,6 @@ package user
 
 import (
 	"database/sql"
-	"log"
-
 	_ "github.com/lib/pq"
 )
 
@@ -23,7 +21,7 @@ func (r *Repository) List() (Users, error) {
 	results, err := r.db.Query(query)
 
 	if err != nil {
-		log.Fatalln("Error while fetching users:", err)
+		return nil, err
 	}
 
 	for results.Next() {
