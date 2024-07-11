@@ -45,6 +45,19 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newUser := createParams.ToUser()
+
+	existingUsers, err := a.repository.FindByEmailOrPhone(newUser)
+
+	if err != nil {
+		error.InternalServerError(w, error.DBDataReadFailure)
+		return
+	}
+
+	if len(existingUsers) > 0 {
+		error.UnprocessableEntity(w, error.EmailOrPhoneExists)
+		return
+	}
+
 	err = a.repository.Create(newUser)
 
 	if err != nil {

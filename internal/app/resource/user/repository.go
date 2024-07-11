@@ -16,7 +16,6 @@ func NewRepository(db *sql.DB) *Repository {
 }
 
 func (r *Repository) List() (Users, error) {
-	users := make([]*User, 0)
 	query := "select * from users;"
 	results, err := r.db.Query(query)
 
@@ -24,13 +23,18 @@ func (r *Repository) List() (Users, error) {
 		return nil, err
 	}
 
-	for results.Next() {
-		var u User
-		results.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Password, &u.DOB, &u.Role, &u.CreatedAt, &u.UpdatedAt)
-		users = append(users, &u)
+	return listUsers(results)
+}
+
+func (r *Repository) FindByEmailOrPhone(user *User) (Users, error) {
+	query := "select * from users where email=$1 or phone=$2"
+	results, err := r.db.Query(query, user.Email, user.Phone)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return users, nil
+	return listUsers(results)
 }
 
 func (r *Repository) Create(user *User) error {
@@ -42,4 +46,16 @@ func (r *Repository) Create(user *User) error {
 	}
 
 	return nil
+}
+
+func listUsers(results *sql.Rows) (Users, error) {
+	users := make([]*User, 0)
+
+	for results.Next() {
+		var u User
+		results.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Password, &u.DOB, &u.Role, &u.CreatedAt, &u.UpdatedAt)
+		users = append(users, &u)
+	}
+
+	return users, nil
 }
