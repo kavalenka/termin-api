@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"log"
 	"net/http"
 	"termin-api/config"
@@ -22,7 +23,9 @@ func main() {
 	)
 	db, _ := sql.Open("postgres", dbConfigStr)
 
-	r := router.New(db)
+	validator := validator.New()
+
+	r := router.New(db, validator)
 
 	s := &http.Server{
 		Addr:         ":3000",

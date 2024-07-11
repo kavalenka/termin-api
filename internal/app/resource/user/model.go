@@ -17,12 +17,12 @@ type User struct {
 }
 
 type CreateParams struct {
-	Name     string `json:"name" form:"required,max=255"`
-	Email    string `json:"email" form:"required,email"`
-	Phone    string `json:"phone" form:"required,max=15"`
-	Password string `json:"password" form:"required,min=8"`
-	DOB      string `json:"dob" form:"required,datetime=2006-01-02"`
-	Role     string `json:"role" form:"required,oneof=admin customer"`
+	Name     string `json:"name" validate:"required,max=255"`
+	Email    string `json:"email" validate:"required,email"`
+	Phone    string `json:"phone" validate:"required,max=15"`
+	Password string `json:"password" validate:"required,min=8"`
+	DOB      string `json:"dob" validate:"required,datetime=2006-01-02"`
+	Role     string `json:"role" validate:"required,oneof=admin customer"`
 }
 
 type SerializedUser struct {

@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"encoding/json"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 
 	"termin-api/internal/app/resource/common/error"
@@ -10,11 +11,13 @@ import (
 
 type API struct {
 	repository *Repository
+	validator  *validator.Validate
 }
 
-func New(db *sql.DB) *API {
+func New(db *sql.DB, validator *validator.Validate) *API {
 	return &API{
 		repository: NewRepository(db),
+		validator:  validator,
 	}
 }
 
@@ -34,8 +37,15 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	createParams := &CreateParams{}
 
 	json.NewDecoder(r.Body).Decode(createParams)
+
+	err := a.validator.Struct(createParams)
+	if err != nil {
+		error.ValidationError(w, error.ValidationFailure)
+		return
+	}
+
 	newUser := createParams.ToUser()
-	err := a.repository.Create(newUser)
+	err = a.repository.Create(newUser)
 
 	if err != nil {
 		error.InternalServerError(w, error.DBDataInsertFailure)
